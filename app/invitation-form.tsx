@@ -1,0 +1,10 @@
+'use client';
+import {useState} from 'react';
+export default function InvitationForm(){
+ const [state,setState]=useState<'idle'|'saving'|'done'>('idle');const [error,setError]=useState('');
+ return <div className="invitation-signup"><h3>Ontvang de volgende uitnodiging</h3><p>Laat je naam en e-mailadres achter. Dan nemen we je op in onze adressenlijst voor nieuwe proeverijen.</p>{state==='done'?<p role="status">Bedankt! Je staat op de lijst voor de volgende uitnodiging.</p>:<form onSubmit={async event=>{event.preventDefault();if(state==='saving')return;setError('');setState('saving');const form=new FormData(event.currentTarget);try{const response=await fetch('/api/uitnodigingen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(form))});if(!response.ok)throw Error(((await response.json()) as {error?:string}).error||'Opslaan lukt nu niet. Probeer het later opnieuw.');setState('done')}catch(e){setError((e as Error).message);setState('idle')}}}>
+ <div className="invitation-fields"><label htmlFor="invite-name">Naam<input id="invite-name" name="name" autoComplete="name" required maxLength={120}/></label><label htmlFor="invite-email">E-mailadres<input id="invite-email" name="email" type="email" autoComplete="email" required maxLength={254}/></label></div>
+ <div className="invite-trap" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
+ <label className="invitation-consent"><input type="checkbox" name="consent" value="yes" required/>Ja, ik ontvang graag uitnodigingen voor de wijnproeverijen.</label>
+ <p className="invitation-privacy">Je kunt je via de organisatie weer afmelden. <a href="/privacy">Over je gegevens</a></p>{error&&<p role="alert">{error}</p>}<button className="button" disabled={state==='saving'}>{state==='saving'?'Opslaan…':'Houd mij op de hoogte'} <span aria-hidden="true">↗</span></button></form>}</div>
+}
