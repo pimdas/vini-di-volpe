@@ -1,4 +1,4 @@
-import { env } from 'cloudflare:workers';
+import { env } from './runtime';
 import type {Edition} from './registration';
 export async function getOpenEditions():Promise<Edition[]>{
  if(!env.DB)throw new Error('Database niet beschikbaar');

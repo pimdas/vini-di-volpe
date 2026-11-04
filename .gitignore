@@ -46,3 +46,7 @@ yarn-error.log*
 
 # Design QA and test fixtures
 /.taste-skill/
+
+/.data/
+/node_modules
+!.env.example

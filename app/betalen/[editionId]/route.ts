@@ -1,4 +1,4 @@
-import {env} from 'cloudflare:workers';
+import {env} from '../../../lib/runtime';
 import {paymentUrl} from '../../../lib/payment';
 export const dynamic='force-dynamic';
 export async function GET(request:Request,{params}:{params:Promise<{editionId:string}>}){
