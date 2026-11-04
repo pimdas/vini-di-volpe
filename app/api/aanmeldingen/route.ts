@@ -1,5 +1,5 @@
 import {paymentUrl as safePaymentUrl} from '../../../lib/payment';
-import {env} from 'cloudflare:workers';
+import {env} from '../../../lib/runtime';
 import {validateBooking} from '../../../lib/registration';
 export const dynamic='force-dynamic';
 const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});

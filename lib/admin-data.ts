@@ -1,6 +1,6 @@
 import {mergeContacts} from './contacts';
 import type {Contact} from './contacts';
-import {env} from 'cloudflare:workers';
+import {env} from './runtime';
 import type {AdminData,Round,AdminEdition,Booking} from './admin-types';
 export async function adminData():Promise<AdminData>{if(!env.DB)throw Error('Database niet beschikbaar');const result=await env.DB.batch([
  env.DB.prepare('SELECT id,title,theme,description FROM rounds ORDER BY rowid DESC'),

@@ -1,5 +1,5 @@
 import {validateContacts,normalizeEmail,validEmail} from '../../../lib/contacts';
-import {env} from 'cloudflare:workers';
+import {env} from '../../../lib/runtime';
 import {getAdmin} from '../../../lib/admin-auth';
 import {adminData} from '../../../lib/admin-data';
 import {editionLabel} from '../../../lib/registration';
