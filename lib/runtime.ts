@@ -21,10 +21,10 @@ export function sqlite(){
 class Statement{
  constructor(readonly sql:string,readonly values:any[]=[]){ }
  bind(...values:any[]){return new Statement(this.sql,values)}
- async first<T=Record<string,unknown>>(){return (sqlite().prepare(this.sql).get(...this.values)||null) as T|null}
- async all<T=Record<string,unknown>>(){return {results:sqlite().prepare(this.sql).all(...this.values) as T[]}}
+ async first<T=Record<string,unknown>>(){const row=sqlite().prepare(this.sql).get(...this.values);return (row?{...row}:null) as T|null}
+ async all<T=Record<string,unknown>>(){return {results:sqlite().prepare(this.sql).all(...this.values).map(row=>({...row})) as T[]}}
  async run(){const result=sqlite().prepare(this.sql).run(...this.values);return {success:true,meta:{changes:Number(result.changes),last_row_id:Number(result.lastInsertRowid)}}}
- execute(){const stmt=sqlite().prepare(this.sql);if(/^\s*(SELECT|WITH|PRAGMA)/i.test(this.sql))return {results:stmt.all(...this.values)};const r=stmt.run(...this.values);return {results:[],success:true,meta:{changes:Number(r.changes)}}}
+ execute(){const stmt=sqlite().prepare(this.sql);if(/^\s*(SELECT|WITH|PRAGMA)/i.test(this.sql))return {results:stmt.all(...this.values).map(row=>({...row}))};const r=stmt.run(...this.values);return {results:[],success:true,meta:{changes:Number(r.changes)}}}
 }
 const database={prepare:(sql:string)=>new Statement(sql),async batch(statements:Statement[]){const db=sqlite();db.exec('BEGIN IMMEDIATE');try{const results=statements.map(s=>s.execute());db.exec('COMMIT');return results}catch(e){db.exec('ROLLBACK');throw e}}};
 export const env={get DB(){return database},get ADMIN_EMAILS(){return process.env.ADMIN_EMAILS||''}};
