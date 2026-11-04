@@ -1,0 +1,7 @@
+import type {Contact} from './contacts';
+export type Round={id:string;title:string;theme:string;description:string};
+export type AdminEdition={id:string;roundId:string;title:string;startsAt:string;endsAt:string;location:string;address:string;priceCents:number;capacity:number;open:number;closesAt:string;paymentUrl:string|null;paymentExpiresAt:string|null;version:number};
+export type Booking={id:string;editionId:string;name:string;email:string;phone:string;people:number;totalCents:number;status:string;createdAt:string;paidAt:string|null;paidBy:string|null};
+export type AdminData={rounds:Round[];editions:AdminEdition[];bookings:Booking[];contacts:Contact[]};
+export function localDate(value:string){if(!value)return '';const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Amsterdam',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(value));const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`}
+export function toISO(value:string){if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value))return null;const target=Date.parse(value+'Z');if(!Number.isFinite(target))return null;let result=target;for(let i=0;i<3;i++){const seen=Date.parse(localDate(new Date(result).toISOString())+'Z');result+=target-seen}const iso=new Date(result).toISOString();return localDate(iso)===value?iso:null}

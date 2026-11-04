@@ -1,0 +1,3 @@
+'use client';
+import {useEffect} from 'react';
+export default function Motion(){useEffect(()=>{if(location.pathname==='/'||location.pathname.startsWith('/aanmelden')||location.pathname.startsWith('/beheer'))return;if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('enter');observer.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('h1,h2,h3,.lead,.landscape,.duo,.booking-notice,.edition-options,.booking-story img').forEach(el=>observer.observe(el));return()=>observer.disconnect()},[]);return null}
