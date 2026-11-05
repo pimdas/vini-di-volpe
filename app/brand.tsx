@@ -1,0 +1,1 @@
+export default function Brand(){return <a className="brand volpe-brand" href="/" aria-label="Vini di Volpe — naar de homepage"><img src="/volpe-logo.png" width="64" height="76" alt=""/>Vini di Volpe</a>}
