@@ -16,6 +16,11 @@ export function sqlite(){
  db.exec(`CREATE TABLE IF NOT EXISTS _admin (id INTEGER PRIMARY KEY CHECK(id=1), email TEXT NOT NULL, password TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS _sessions (hash TEXT PRIMARY KEY, expires INTEGER NOT NULL);
  CREATE TABLE IF NOT EXISTS _login_attempts (id INTEGER PRIMARY KEY CHECK(id=1), count INTEGER NOT NULL, expires INTEGER NOT NULL);`);
+ db.exec(`CREATE TABLE IF NOT EXISTS _users (id TEXT PRIMARY KEY,email TEXT NOT NULL UNIQUE,name TEXT NOT NULL,password TEXT NOT NULL,owner INTEGER NOT NULL DEFAULT 0,active INTEGER NOT NULL DEFAULT 1);
+ CREATE TABLE IF NOT EXISTS _user_login_attempts (key TEXT PRIMARY KEY,count INTEGER NOT NULL,expires INTEGER NOT NULL);`);
+ if(!db.prepare('PRAGMA table_info(_sessions)').all().some(c=>c.name==='user_id'))db.exec('ALTER TABLE _sessions ADD COLUMN user_id TEXT REFERENCES _users(id)');
+ db.prepare("INSERT OR IGNORE INTO _users(id,email,name,password,owner) SELECT 'legacy-owner',lower(trim(email)),'Beheerder',password,1 FROM _admin WHERE id=1").run();
+ db.prepare("UPDATE _sessions SET user_id='legacy-owner' WHERE user_id IS NULL AND EXISTS(SELECT 1 FROM _users WHERE id='legacy-owner')").run();
  connection=db;return db;
 }
 class Statement{
